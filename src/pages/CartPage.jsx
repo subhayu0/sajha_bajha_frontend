@@ -1,42 +1,52 @@
-import { useState } from "react"
-import { Link } from "react-router-dom"
-import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft } from "lucide-react"
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { Trash2, Minus, Plus, ShoppingBag, ArrowLeft } from 'lucide-react'
+import { useCart } from '../context/CartContext.jsx'
 
-const CartPage = ({ cartItems, onUpdateQuantity, onRemoveFromCart }) => {
-  const [promoCode, setPromoCode] = useState("")
-  const [appliedPromo, setAppliedPromo] = useState(null)
+const CartPage = () => {
+  const navigate = useNavigate()
+  const { 
+    items, 
+    removeFromCart, 
+    updateQuantity, 
+    clearCart, 
+    getCartSummary 
+  } = useCart()
+  const [isCheckingOut, setIsCheckingOut] = useState(false)
 
-  const subtotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0)
-  const shipping = subtotal > 50 ? 0 : 9.99
-  const discount = appliedPromo ? subtotal * 0.1 : 0
-  const tax = (subtotal - discount) * 0.08
-  const total = subtotal + shipping - discount + tax
+  const cartSummary = getCartSummary()
 
-  const handleApplyPromo = () => {
-    if (promoCode.toLowerCase() === "save10") {
-      setAppliedPromo({ code: "SAVE10", discount: 0.1 })
+  const handleQuantityChange = (productId, newQuantity) => {
+    if (newQuantity <= 0) {
+      removeFromCart(productId)
     } else {
-      alert("Invalid promo code")
+      updateQuantity(productId, newQuantity)
     }
   }
 
-  const handleRemovePromo = () => {
-    setAppliedPromo(null)
-    setPromoCode("")
+  const handleCheckout = () => {
+    setIsCheckingOut(true)
+    // Here you would typically redirect to a checkout page or payment gateway
+    // For now, we'll just show a success message
+    setTimeout(() => {
+      alert('Order placed successfully!')
+      clearCart()
+      navigate('/')
+    }, 2000)
   }
 
-  if (cartItems.length === 0) {
+  if (items.length === 0) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <ShoppingBag className="h-24 w-24 text-gray-400 mx-auto mb-6" />
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Your cart is empty</h2>
-          <p className="text-gray-600 mb-8">Looks like you haven't added any instruments to your cart yet.</p>
+          <ShoppingBag className="mx-auto h-16 w-16 text-gray-400 mb-4" />
+          <h2 className="text-2xl font-semibold text-gray-900 mb-2">Your cart is empty</h2>
+          <p className="text-gray-600 mb-6">Looks like you haven't added any items to your cart yet.</p>
           <Link
             to="/shop"
-            className="inline-flex items-center bg-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-purple-700 transition-colors duration-200"
+            className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 transition-colors"
           >
-            <ArrowLeft className="h-4 w-4 mr-2" />
+            <ArrowLeft className="mr-2 h-5 w-5" />
             Continue Shopping
           </Link>
         </div>
@@ -47,61 +57,66 @@ const CartPage = ({ cartItems, onUpdateQuantity, onRemoveFromCart }) => {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
         <div className="mb-8">
-          <Link
-            to="/shop"
-            className="inline-flex items-center text-purple-600 hover:text-purple-700 mb-4"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Continue Shopping
-          </Link>
-          <h1 className="text-3xl font-bold text-gray-900">Shopping Cart</h1>
-          <p className="text-gray-600 mt-2">{cartItems.length} item{cartItems.length !== 1 ? 's' : ''} in your cart</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">Shopping Cart</h1>
+              <p className="text-gray-600 mt-1">
+                {cartSummary.itemCount} {cartSummary.itemCount === 1 ? 'item' : 'items'} in your cart
+              </p>
+            </div>
+            <Link
+              to="/shop"
+              className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Continue Shopping
+            </Link>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Cart Items */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-md overflow-hidden">
+            <div className="bg-white rounded-lg shadow-sm">
               <div className="p-6">
                 <h2 className="text-lg font-semibold text-gray-900 mb-4">Cart Items</h2>
                 <div className="space-y-4">
-                  {cartItems.map((item) => (
+                  {items.map((item) => (
                     <div key={item.id} className="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg">
                       <img
-                        src={item.image || "/placeholder.svg"}
+                        src={item.image || '/placeholder.svg'}
                         alt={item.name}
                         className="w-20 h-20 object-cover rounded-md"
                       />
-                      
                       <div className="flex-1">
-                        <h3 className="font-semibold text-gray-900">{item.name}</h3>
-                        <p className="text-gray-600">${item.price.toFixed(2)} each</p>
+                        <h3 className="text-lg font-medium text-gray-900">{item.name}</h3>
+                        <p className="text-gray-600">SKU: {item.sku}</p>
+                        <p className="text-lg font-semibold text-gray-900">${item.price}</p>
                       </div>
-
                       <div className="flex items-center space-x-2">
                         <button
-                          onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
-                          className="p-1 rounded-md border border-gray-300 hover:bg-gray-50"
+                          onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
+                          className="p-1 rounded-md hover:bg-gray-100 transition-colors"
                         >
                           <Minus className="h-4 w-4" />
                         </button>
-                        <span className="w-12 text-center font-medium">{item.quantity}</span>
+                        <span className="w-12 text-center text-lg font-medium">{item.quantity}</span>
                         <button
-                          onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
-                          className="p-1 rounded-md border border-gray-300 hover:bg-gray-50"
+                          onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                          className="p-1 rounded-md hover:bg-gray-100 transition-colors"
                         >
                           <Plus className="h-4 w-4" />
                         </button>
                       </div>
-
                       <div className="text-right">
-                        <p className="font-semibold text-gray-900">
+                        <p className="text-lg font-semibold text-gray-900">
                           ${(item.price * item.quantity).toFixed(2)}
                         </p>
                         <button
-                          onClick={() => onRemoveFromCart(item.id)}
-                          className="text-red-600 hover:text-red-700 mt-1"
+                          onClick={() => removeFromCart(item.id)}
+                          className="text-red-600 hover:text-red-800 transition-colors mt-1"
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>
@@ -115,94 +130,56 @@ const CartPage = ({ cartItems, onUpdateQuantity, onRemoveFromCart }) => {
 
           {/* Order Summary */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-md p-6 sticky top-4">
+            <div className="bg-white rounded-lg shadow-sm p-6 sticky top-4">
               <h2 className="text-lg font-semibold text-gray-900 mb-4">Order Summary</h2>
-              
-              {/* Promo Code */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Promo Code
-                </label>
-                {appliedPromo ? (
-                  <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-md p-3">
-                    <span className="text-green-800 font-medium">{appliedPromo.code} Applied</span>
-                    <button
-                      onClick={handleRemovePromo}
-                      className="text-green-600 hover:text-green-700"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex">
-                    <input
-                      type="text"
-                      value={promoCode}
-                      onChange={(e) => setPromoCode(e.target.value)}
-                      placeholder="Enter promo code"
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    />
-                    <button
-                      onClick={handleApplyPromo}
-                      className="bg-gray-600 text-white px-4 py-2 rounded-r-md hover:bg-gray-700 transition-colors duration-200"
-                    >
-                      Apply
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              {/* Price Breakdown */}
-              <div className="space-y-3 mb-6">
+              <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Subtotal</span>
-                  <span className="font-medium">${subtotal.toFixed(2)}</span>
+                  <span className="font-medium">${cartSummary.subtotal.toFixed(2)}</span>
                 </div>
-                
-                {appliedPromo && (
-                  <div className="flex justify-between text-green-600">
-                    <span>Discount ({appliedPromo.code})</span>
-                    <span>-${discount.toFixed(2)}</span>
-                  </div>
-                )}
-                
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Tax (13% VAT)</span>
+                  <span className="font-medium">${cartSummary.tax.toFixed(2)}</span>
+                </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Shipping</span>
                   <span className="font-medium">
-                    {shipping === 0 ? "Free" : `$${shipping.toFixed(2)}`}
+                    {cartSummary.shipping === 0 ? 'Free' : `$${cartSummary.shipping.toFixed(2)}`}
                   </span>
                 </div>
-                
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Tax</span>
-                  <span className="font-medium">${tax.toFixed(2)}</span>
-                </div>
-                
                 <div className="border-t pt-3">
                   <div className="flex justify-between">
-                    <span className="text-lg font-semibold">Total</span>
-                    <span className="text-lg font-bold text-purple-600">${total.toFixed(2)}</span>
+                    <span className="text-lg font-semibold text-gray-900">Total</span>
+                    <span className="text-lg font-semibold text-gray-900">
+                      ${cartSummary.total.toFixed(2)}
+                    </span>
                   </div>
                 </div>
               </div>
 
-              {subtotal < 50 && (
-                <div className="bg-blue-50 border border-blue-200 rounded-md p-3 mb-6">
+              <div className="mt-6 space-y-3">
+                <button
+                  onClick={handleCheckout}
+                  disabled={isCheckingOut}
+                  className="w-full bg-purple-600 text-white py-3 px-4 rounded-md font-medium hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isCheckingOut ? 'Processing...' : 'Proceed to Checkout'}
+                </button>
+                <button
+                  onClick={clearCart}
+                  className="w-full border border-gray-300 text-gray-700 py-3 px-4 rounded-md font-medium hover:bg-gray-50 transition-colors"
+                >
+                  Clear Cart
+                </button>
+              </div>
+
+              {cartSummary.shipping > 0 && (
+                <div className="mt-4 p-3 bg-blue-50 rounded-md">
                   <p className="text-sm text-blue-800">
-                    Add ${(50 - subtotal).toFixed(2)} more to get free shipping!
+                    Add ${(5000 - cartSummary.subtotal).toFixed(2)} more to your cart for free shipping!
                   </p>
                 </div>
               )}
-
-              <button className="w-full bg-purple-600 text-white py-3 rounded-lg font-medium hover:bg-purple-700 transition-colors duration-200 mb-4">
-                Proceed to Checkout
-              </button>
-              
-              <div className="text-center">
-                <p className="text-sm text-gray-600">
-                  Secure checkout powered by Stripe
-                </p>
-              </div>
             </div>
           </div>
         </div>

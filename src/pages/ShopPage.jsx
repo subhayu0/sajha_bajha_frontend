@@ -1,119 +1,156 @@
 "use client"
 
-import { useState } from "react"
-import { Search, Filter, Grid, List } from "lucide-react"
-import ProductCard from "../components/ProductCard"
+import { useState, useEffect } from "react"
+import { useSearchParams, useNavigate } from "react-router-dom"
+import { Search, Filter, Grid, List, Star } from "lucide-react"
+import ProductCard from "../components/ProductCard.jsx"
+import { useCart } from "../context/CartContext.jsx"
 
+// Sample product data - replace with API call
 const products = [
   {
     id: 1,
-    name: "Yamaha Acoustic Guitar",
-    price: 299.99,
-    originalPrice: 399.99,
-    image: "https://images.pexels.com/photos/1407322/pexels-photo-1407322.jpeg?auto=compress&cs=tinysrgb&w=400",
-    rating: 4.8,
-    reviews: 124,
-    category: "Guitars",
+    name: "Yamaha P-45 Digital Piano",
+    price: 499.99,
+    originalPrice: 599.99,
+    image: "https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=400",
+    category: "Piano",
     brand: "Yamaha",
+    rating: 4.8,
+    reviews: 127,
     inStock: true,
+    stockQuantity: 15,
+    sku: "YP45-BLK",
+    images: ["https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=400"],
   },
   {
     id: 2,
-    name: "Roland Digital Piano",
-    price: 1299.99,
-    originalPrice: 1599.99,
-    image: "https://images.pexels.com/photos/164743/pexels-photo-164743.jpeg?auto=compress&cs=tinysrgb&w=400",
+    name: "Fender Stratocaster Electric Guitar",
+    price: 699.99,
+    originalPrice: 799.99,
+    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400",
+    category: "Guitar",
+    brand: "Fender",
     rating: 4.9,
     reviews: 89,
-    category: "Keyboards",
-    brand: "Roland",
     inStock: true,
+    stockQuantity: 8,
+    sku: "FS-STRAT",
+    images: ["https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400"],
   },
   {
     id: 3,
-    name: "Pearl Drum Set",
+    name: "Roland TD-17KV Electronic Drum Kit",
     price: 899.99,
-    originalPrice: 1199.99,
-    image: "https://images.pexels.com/photos/95425/pexels-photo-95425.jpeg?auto=compress&cs=tinysrgb&w=400",
+    originalPrice: 1099.99,
+    image: "https://images.unsplash.com/photo-1519892300165-cb5542fb47c7?w=400",
+    category: "Drums",
+    brand: "Roland",
     rating: 4.7,
     reviews: 156,
-    category: "Drums",
-    brand: "Pearl",
     inStock: true,
+    stockQuantity: 12,
+    sku: "RTD17KV",
+    images: ["https://images.unsplash.com/photo-1519892300165-cb5542fb47c7?w=400"],
   },
   {
     id: 4,
-    name: "Fender Electric Guitar",
-    price: 799.99,
-    originalPrice: 999.99,
-    image: "https://images.pexels.com/photos/1656684/pexels-photo-1656684.jpeg?auto=compress&cs=tinysrgb&w=400",
+    name: "Gibson Les Paul Standard",
+    price: 2499.99,
+    originalPrice: 2799.99,
+    image: "https://images.unsplash.com/photo-1564186763535-ebb21ef5277f?w=400",
+    category: "Guitar",
+    brand: "Gibson",
     rating: 4.9,
     reviews: 203,
-    category: "Guitars",
-    brand: "Fender",
     inStock: true,
+    stockQuantity: 5,
+    sku: "GLP-STD",
+    images: ["https://images.unsplash.com/photo-1564186763535-ebb21ef5277f?w=400"],
   },
   {
     id: 5,
-    name: "Yamaha Saxophone",
-    price: 1899.99,
-    originalPrice: 2299.99,
-    image: "https://images.pexels.com/photos/3779235/pexels-photo-3779235.jpeg?auto=compress&cs=tinysrgb&w=400",
-    rating: 4.8,
-    reviews: 67,
-    category: "Wind",
-    brand: "Yamaha",
-    inStock: false,
+    name: "Kawai ES110 Digital Piano",
+    price: 649.99,
+    originalPrice: 749.99,
+    image: "https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=400",
+    category: "Piano",
+    brand: "Kawai",
+    rating: 4.6,
+    reviews: 94,
+    inStock: true,
+    stockQuantity: 10,
+    sku: "KES110-BLK",
+    images: ["https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=400"],
   },
   {
     id: 6,
-    name: "Violin Set",
-    price: 249.99,
-    originalPrice: 349.99,
-    image:
-      "https://images.pexels.com/photos/33597/violin-musical-instrument-music-sound.jpg?auto=compress&cs=tinysrgb&w=400",
-    rating: 4.6,
-    reviews: 98,
-    category: "Strings",
-    brand: "Stentor",
+    name: "Pearl Export Drum Set",
+    price: 399.99,
+    originalPrice: 499.99,
+    image: "https://images.unsplash.com/photo-1519892300165-cb5542fb47c7?w=400",
+    category: "Drums",
+    brand: "Pearl",
+    rating: 4.5,
+    reviews: 78,
     inStock: true,
+    stockQuantity: 20,
+    sku: "PEX-5PC",
+    images: ["https://images.unsplash.com/photo-1519892300165-cb5542fb47c7?w=400"],
   },
   {
     id: 7,
-    name: "Casio Digital Piano",
-    price: 599.99,
-    originalPrice: 749.99,
-    image: "https://images.pexels.com/photos/164743/pexels-photo-164743.jpeg?auto=compress&cs=tinysrgb&w=400",
-    rating: 4.5,
-    reviews: 142,
-    category: "Keyboards",
-    brand: "Casio",
+    name: "Taylor 214ce Grand Auditorium",
+    price: 899.99,
+    originalPrice: 999.99,
+    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400",
+    category: "Guitar",
+    brand: "Taylor",
+    rating: 4.8,
+    reviews: 167,
     inStock: true,
+    stockQuantity: 7,
+    sku: "T214CE",
+    images: ["https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400"],
   },
   {
     id: 8,
-    name: "Gibson Les Paul",
-    price: 2499.99,
-    originalPrice: 2999.99,
-    image: "https://images.pexels.com/photos/1656684/pexels-photo-1656684.jpeg?auto=compress&cs=tinysrgb&w=400",
-    rating: 4.9,
-    reviews: 87,
-    category: "Guitars",
-    brand: "Gibson",
-    inStock: true,
+    name: "Casio PX-S1000 Digital Piano",
+    price: 449.99,
+    originalPrice: 549.99,
+    image: "https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=400",
+    category: "Piano",
+    brand: "Casio",
+    rating: 4.4,
+    reviews: 112,
+    inStock: false,
+    stockQuantity: 0,
+    sku: "CPXS1000",
+    images: ["https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=400"],
   },
 ]
 
-const categories = ["All", "Guitars", "Keyboards", "Drums", "Wind", "Strings"]
-const brands = ["All", "Yamaha", "Roland", "Pearl", "Fender", "Gibson", "Casio", "Stentor"]
+const categories = ["All", "Guitar", "Piano", "Drums", "Bass", "Wind", "Percussion"]
+const brands = ["All", "Yamaha", "Fender", "Gibson", "Roland", "Kawai", "Pearl", "Taylor", "Casio"]
 
-const ShopPage = ({ onAddToCart }) => {
+const ShopPage = () => {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("All")
   const [selectedBrand, setSelectedBrand] = useState("All")
   const [sortBy, setSortBy] = useState("featured")
   const [viewMode, setViewMode] = useState("grid")
   const [showFilters, setShowFilters] = useState(false)
+  const [searchParams] = useSearchParams()
+  const navigate = useNavigate()
+  const { addToCart } = useCart()
+
+  // Handle search params on component mount
+  useEffect(() => {
+    const search = searchParams.get('search')
+    if (search) {
+      setSearchTerm(search)
+    }
+  }, [searchParams])
 
   const filteredProducts = products.filter((product) => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -139,6 +176,12 @@ const ShopPage = ({ onAddToCart }) => {
 
   const getDiscount = (price, originalPrice) => {
     return Math.round(((originalPrice - price) / originalPrice) * 100)
+  }
+
+  const handleAddToCart = (product) => {
+    addToCart(product, 1)
+    // Show success message and optionally navigate to cart
+    navigate('/cart')
   }
 
   return (
@@ -266,7 +309,7 @@ const ShopPage = ({ onAddToCart }) => {
               }`}
             >
               {sortedProducts.map((product) => (
-                <ProductCard key={product.id} product={product} onAddToCart={onAddToCart} viewMode={viewMode} />
+                <ProductCard key={product.id} product={product} onAddToCart={() => handleAddToCart(product)} viewMode={viewMode} />
               ))}
             </div>
 

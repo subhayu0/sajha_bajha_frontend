@@ -54,7 +54,7 @@ const AdminLoginPage = ({ onLogin }) => {
 
     // Simulate API call with admin credentials check
     setTimeout(() => {
-      if (formData.email === "admin@sajhabaja.com" && formData.password === "admin123") {
+      if (formData.email === "admin@sajhabajha.com" && formData.password === "admin123") {
         const adminData = {
           id: "admin1",
           name: "Admin User",

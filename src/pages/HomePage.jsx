@@ -1,173 +1,236 @@
-import { Link } from "react-router-dom"
-import ProductCard from "../components/ProductCard"
-import { Star, Truck, Shield, Headphones } from "lucide-react"
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { ArrowRight, Star, ShoppingCart, Music, Guitar, Piano, Drum } from 'lucide-react'
+import ProductCard from '../components/ProductCard.jsx'
+import { useCart } from '../context/CartContext.jsx'
 
-const HomePage = ({ onAddToCart }) => {
-  const featuredProducts = [
-    {
-      id: 1,
-      name: "Yamaha Acoustic Guitar",
-      price: 299.99,
-      originalPrice: 399.99,
-      image: "https://images.pexels.com/photos/1407322/pexels-photo-1407322.jpeg?auto=compress&cs=tinysrgb&w=400",
-      rating: 4.8,
-      reviews: 124,
-    },
-    {
-      id: 2,
-      name: "Roland Digital Piano",
-      price: 1299.99,
-      originalPrice: 1599.99,
-      image: "https://images.pexels.com/photos/164743/pexels-photo-164743.jpeg?auto=compress&cs=tinysrgb&w=400",
-      rating: 4.9,
-      reviews: 89,
-    },
-    {
-      id: 3,
-      name: "Pearl Drum Set",
-      price: 899.99,
-      originalPrice: 1199.99,
-      image: "https://images.pexels.com/photos/95425/pexels-photo-95425.jpeg?auto=compress&cs=tinysrgb&w=400",
-      rating: 4.7,
-      reviews: 156,
-    },
-    {
-      id: 4,
-      name: "Fender Electric Guitar",
-      price: 799.99,
-      originalPrice: 999.99,
-      image: "https://images.pexels.com/photos/1656684/pexels-photo-1656684.jpeg?auto=compress&cs=tinysrgb&w=400",
-      rating: 4.9,
-      reviews: 203,
-    },
-    {
-      id: 5,
-      name: "Yamaha Saxophone",
-      price: 1899.99,
-      originalPrice: 2299.99,
-      image: "https://images.pexels.com/photos/3779235/pexels-photo-3779235.jpeg?auto=compress&cs=tinysrgb&w=400",
-      rating: 4.8,
-      reviews: 67,
-    },
-    {
-      id: 6,
-      name: "Violin Set",
-      price: 249.99,
-      originalPrice: 349.99,
-      image:
-        "https://images.pexels.com/photos/33597/violin-musical-instrument-music-sound.jpg?auto=compress&cs=tinysrgb&w=400",
-      rating: 4.6,
-      reviews: 98,
-    },
-  ]
+// Sample featured products
+const featuredProducts = [
+  {
+    id: 1,
+    name: "Yamaha P-45 Digital Piano",
+    price: 499.99,
+    originalPrice: 599.99,
+    image: "https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=400",
+    category: "Piano",
+    brand: "Yamaha",
+    rating: 4.8,
+    reviews: 127,
+    inStock: true,
+    stockQuantity: 15,
+    sku: "YP45-BLK",
+    images: ["https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=400"],
+  },
+  {
+    id: 2,
+    name: "Fender Stratocaster Electric Guitar",
+    price: 699.99,
+    originalPrice: 799.99,
+    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400",
+    category: "Guitar",
+    brand: "Fender",
+    rating: 4.9,
+    reviews: 89,
+    inStock: true,
+    stockQuantity: 8,
+    sku: "FS-STRAT",
+    images: ["https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400"],
+  },
+  {
+    id: 3,
+    name: "Roland TD-17KV Electronic Drum Kit",
+    price: 899.99,
+    originalPrice: 1099.99,
+    image: "https://images.unsplash.com/photo-1519892300165-cb5542fb47c7?w=400",
+    category: "Drums",
+    brand: "Roland",
+    rating: 4.7,
+    reviews: 156,
+    inStock: true,
+    stockQuantity: 12,
+    sku: "RTD17KV",
+    images: ["https://images.unsplash.com/photo-1519892300165-cb5542fb47c7?w=400"],
+  },
+  {
+    id: 4,
+    name: "Gibson Les Paul Standard",
+    price: 2499.99,
+    originalPrice: 2799.99,
+    image: "https://images.unsplash.com/photo-1564186763535-ebb21ef5277f?w=400",
+    category: "Guitar",
+    brand: "Gibson",
+    rating: 4.9,
+    reviews: 203,
+    inStock: true,
+    stockQuantity: 5,
+    sku: "GLP-STD",
+    images: ["https://images.unsplash.com/photo-1564186763535-ebb21ef5277f?w=400"],
+  },
+]
 
-  const features = [
-    {
-      icon: Truck,
-      title: "Free Shipping",
-      description: "Free shipping on orders over $50",
-    },
-    {
-      icon: Shield,
-      title: "2 Year Warranty",
-      description: "Comprehensive warranty on all instruments",
-    },
-    {
-      icon: Headphones,
-      title: "Expert Support",
-      description: "Professional musicians ready to help",
-    },
-    {
-      icon: Star,
-      title: "Top Quality",
-      description: "Only premium brands and instruments",
-    },
-  ]
+const categories = [
+  {
+    name: "Guitars",
+    icon: Guitar,
+    description: "Electric, acoustic, and bass guitars",
+    count: 45,
+    color: "bg-blue-500",
+  },
+  {
+    name: "Pianos",
+    icon: Piano,
+    description: "Digital and acoustic pianos",
+    count: 23,
+    color: "bg-purple-500",
+  },
+  {
+    name: "Drums",
+    icon: Drum,
+    description: "Acoustic and electronic drum kits",
+    count: 18,
+    color: "bg-orange-500",
+  },
+]
+
+const HomePage = () => {
+  const { addToCart } = useCart()
+
+  const handleAddToCart = (product) => {
+    addToCart(product, 1)
+    // You could add a toast notification here
+  }
 
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-purple-900 via-purple-800 to-indigo-800 text-white">
-        <div className="absolute inset-0 bg-black opacity-20"></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+      <section className="bg-gradient-to-r from-purple-600 to-blue-600 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
           <div className="text-center">
             <h1 className="text-4xl md:text-6xl font-bold mb-6">
-              Your Music Journey
-              <span className="block text-yellow-400">Starts Here</span>
+              Discover Your Perfect
+              <span className="block text-yellow-300">Musical Instrument</span>
             </h1>
-            <p className="text-xl md:text-2xl mb-8 text-gray-200 max-w-3xl mx-auto">
-              Discover premium musical instruments from world-renowned brands. Whether you're a beginner or a
-              professional, we have the perfect instrument for you.
+            <p className="text-xl md:text-2xl mb-8 text-purple-100">
+              Premium instruments from world-renowned brands, delivered to your doorstep
             </p>
-            <Link
-              to="/shop"
-              className="inline-block bg-yellow-500 text-gray-900 px-8 py-4 rounded-full text-lg font-semibold hover:bg-yellow-400 transition-all duration-300 transform hover:scale-105"
-            >
-              Explore Collection
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link
+                to="/shop"
+                className="bg-white text-purple-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-colors inline-flex items-center justify-center"
+              >
+                Shop Now
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+              <Link
+                to="/about"
+                className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-white hover:text-purple-600 transition-colors inline-flex items-center justify-center"
+              >
+                Learn More
+              </Link>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {features.map((feature, index) => (
-              <div key={index} className="text-center p-6 rounded-lg hover:shadow-lg transition-shadow duration-300">
-                <feature.icon className="h-12 w-12 text-purple-600 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">{feature.title}</h3>
-                <p className="text-gray-600">{feature.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Products Section */}
+      {/* Categories Section */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Featured Instruments</h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Handpicked selection of premium instruments from top brands, perfect for musicians of all skill levels.
-            </p>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Shop by Category</h2>
+            <p className="text-lg text-gray-600">Find the perfect instrument for your musical journey</p>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {featuredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} onAddToCart={onAddToCart} />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {categories.map((category) => (
+              <Link
+                key={category.name}
+                to={`/shop?category=${category.name}`}
+                className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow group"
+              >
+                <div className={`w-16 h-16 ${category.color} rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                  <category.icon className="h-8 w-8 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">{category.name}</h3>
+                <p className="text-gray-600 mb-4">{category.description}</p>
+                <p className="text-sm text-purple-600 font-medium">{category.count} products</p>
+              </Link>
             ))}
-          </div>
-
-          <div className="text-center mt-12">
-            <Link
-              to="/shop"
-              className="inline-block bg-purple-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-purple-700 transition-colors duration-200"
-            >
-              View All Products
-            </Link>
           </div>
         </div>
       </section>
 
-      {/* Newsletter Section */}
+      {/* Featured Products */}
+      <section className="py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">Featured Products</h2>
+              <p className="text-gray-600">Handpicked instruments from our collection</p>
+            </div>
+            <Link
+              to="/shop"
+              className="text-purple-600 hover:text-purple-700 font-medium inline-flex items-center"
+            >
+              View All
+              <ArrowRight className="ml-1 h-4 w-4" />
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {featuredProducts.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                onAddToCart={() => handleAddToCart(product)}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Why Choose Us */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Why Choose Sajha Bajha?</h2>
+            <p className="text-lg text-gray-600">We're committed to providing the best musical experience</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Music className="h-8 w-8 text-purple-600" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Premium Quality</h3>
+              <p className="text-gray-600">All our instruments are carefully selected from top brands</p>
+            </div>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <ShoppingCart className="h-8 w-8 text-blue-600" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Fast Delivery</h3>
+              <p className="text-gray-600">Quick and secure shipping across Nepal</p>
+            </div>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Star className="h-8 w-8 text-green-600" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Expert Support</h3>
+              <p className="text-gray-600">Get help from our music experts anytime</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
       <section className="py-16 bg-purple-600">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">Stay in Tune with Our Latest Updates</h2>
-          <p className="text-lg text-purple-100 mb-8 max-w-2xl mx-auto">
-            Get exclusive deals, new product announcements, and expert tips delivered to your inbox.
-          </p>
-          <div className="max-w-md mx-auto flex">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="flex-1 px-4 py-3 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
-            />
-            <button className="bg-yellow-500 text-gray-900 px-6 py-3 rounded-r-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
-              Subscribe
-            </button>
-          </div>
+          <h2 className="text-3xl font-bold text-white mb-4">Ready to Start Your Musical Journey?</h2>
+          <p className="text-xl text-purple-100 mb-8">Join thousands of musicians who trust Sajha Bajha</p>
+          <Link
+            to="/shop"
+            className="bg-white text-purple-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-colors inline-flex items-center"
+          >
+            Browse Our Collection
+            <ArrowRight className="ml-2 h-5 w-5" />
+          </Link>
         </div>
       </section>
     </div>
