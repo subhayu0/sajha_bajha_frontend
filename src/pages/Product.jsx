@@ -39,7 +39,7 @@ const App = () => {
                     <SportCard
                         title="Drums"
                         description="Feel the pulse of music with drums — ignite your rhythm and bring every beat to life."
-                        imageUrl="./aboutdrums.png"
+                        imageUrl="./aboutdrum.png"
                         altText="Playing Drums"
                         navigateTo="/Drums"
                     />
