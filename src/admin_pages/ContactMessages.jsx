@@ -11,7 +11,7 @@ const ContactMessages = () => {
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  // Fetch messages on component mount
+  // Fetch messages on component mount   
   useEffect(() => {
     console.log('ContactMessages component mounted');
     // Check authentication state
