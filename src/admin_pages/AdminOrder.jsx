@@ -19,7 +19,7 @@ const AdminOrder = () => {
     cancelled: 0
   });
 
-  // Create an axios instance with the base URL
+  // Create an axios instance with the base URL   
   const api = axios.create({
     baseURL: 'http://localhost:5001/api'
   });
