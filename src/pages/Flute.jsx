@@ -13,7 +13,7 @@ const Flute = () => {
   const { addToCart } = useCart();
   
   useEffect(() => {
-    // Refresh products when component mounts
+    // Refresh products when component mounts   
     refreshProducts();
   }, []);
   
