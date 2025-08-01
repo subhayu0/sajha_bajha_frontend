@@ -1,0 +1,157 @@
+ 
+                /* Basic Reset and Font Import */
+                @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+                body {
+                    margin: 0;
+                    font-family: 'Inter', sans-serif;
+                    -webkit-font-smoothing: antialiased;
+                    -moz-osx-font-smoothing: grayscale;
+                }
+
+                /* App Container */
+                .app-container {
+                    min-height: 100vh;
+                    background-color: #2f1e84;
+                    color: white;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    padding-top: 100px; 
+                    padding-bottom: 50px; 
+                }
+
+                /* Page Title */
+                .page-title {
+                    font-size: 2.25rem; /* text-3xl */
+                    font-weight: 700; /* font-bold */
+                    margin-bottom: 2rem; /* mb-8 */
+                    text-align: center;
+                    padding-left: 1rem; /* px-4 */
+                    padding-right: 1rem; /* px-4 */
+                }
+
+                /* Responsive adjustments for page title */
+                @media (min-width: 768px) { /* md: */
+                    .page-title {
+                        font-size: 2.5rem; /* md:text-4xl */
+                    }
+                }
+
+                /* Sports Categories Container */
+                .sports-categories-container {
+                    width: 100%;
+                    max-width: 64rem; /* max-w-4xl */
+                    padding-left: 1rem; /* px-4 */
+                    padding-right: 1rem; /* px-4 */
+                    display: flex;
+                    flex-direction: column;
+                    gap: 2rem; /* space-y-8 */
+                }
+
+                /* Sport Card */
+                .sport-card {
+                    position: relative;
+                    width: 100%;
+                    height:250px;
+                    border-radius: 0.5rem; /* rounded-lg */
+                    overflow: hidden;
+                    transform: scale(1); /* Initial scale for transition */
+                    transition: transform 0.3s ease-in-out; /* transition-transform duration-300 */
+                    cursor: pointer;
+                }
+
+                .sport-card:hover {
+                    transform: scale(1.02); /* hover:scale-[1.02] */
+                }
+
+                /* Sport Card Image */
+                .sport-card-image {
+                    width: 100%;
+                    height:300px;
+                    object-fit: cover;
+                    object-position: center;
+                    transition: opacity 0.3s ease-in-out; /* transition-opacity duration-300 */
+                }
+
+                .sport-card:hover .sport-card-image {
+                    opacity: 0.8; /* hover:opacity-80 */
+                }
+
+                /* Responsive adjustments for image height */
+                @media (min-width: 768px) { /* md: */
+                    .sport-card-image {
+                        height: 16rem; /* md:h-64 */
+                    }
+                }
+
+                /* Sport Card Overlay */
+                .sport-card-overlay {
+                    position: absolute;
+                    inset: 0; /* inset-0 */
+                    background-color: rgba(0, 0, 0, 0.5); 
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: flex-end; /* justify-end */
+                    padding: 1rem; /* p-4 */
+                    transition: opacity 0.3s ease-in-out; /* transition-opacity duration-300 */
+                    opacity: 0; /* opacity-0 */
+                }
+
+                .sport-card:hover .sport-card-overlay {
+                    opacity: 1; /* hover:opacity-100 */
+                }
+
+                /* Responsive adjustments for overlay padding */
+                @media (min-width: 768px) { /* md: */
+                    .sport-card-overlay {
+                        padding: 1.5rem; /* md:p-6 */
+                    }
+                }
+
+                /* Sport Card Title */
+                .sport-card-title {
+                    font-size: 1.25rem; /* text-xl */
+                    font-weight: 600; /* font-semibold */
+                    margin-bottom: 0.5rem; /* mb-2 */
+                }
+
+                /* Responsive adjustments for card title */
+                @media (min-width: 768px) { /* md: */
+                    .sport-card-title {
+                        font-size: 1.5rem; /* md:text-2xl */
+                    }
+                }
+
+                /* Sport Card Description */
+                .sport-card-description {
+                    font-size: 0.875rem; /* text-sm */
+                    color: #D1D5DB; /* text-gray-300 */
+                }
+
+                /* Responsive adjustments for card description */
+                @media (min-width: 768px) { /* md: */
+                    .sport-card-description {
+                        font-size: 1rem; /* md:text-base */
+                    }
+                }
+
+                /* Explore Button */
+                .explore-button {
+                    margin-top: 1rem; /* mt-4 */
+                    padding: 0.5rem 1rem; /* px-4 py-2 */
+                    background-color: #7262ec;
+                    color: white;
+                    font-weight: 600; /* font-semibold */
+                    border-radius: 9999px; /* rounded-full */
+                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
+                    transition: background-color 0.3s ease-in-out; /* transition-colors duration-300 */
+                    align-self: flex-start; /* self-start */
+                    border: none; /* Remove default button border */
+                    cursor: pointer;
+                }
+
+                .explore-button:hover {
+                    background-color: purple;
+                }
+                

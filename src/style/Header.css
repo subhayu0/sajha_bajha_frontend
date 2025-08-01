@@ -1,0 +1,193 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.Bajha {
+  max-width: 150px;
+  height: auto;
+  object-fit: contain;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+}
+
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 80px;
+  width: 100%;
+  background-color: #54548b;
+  color: white;
+  border-bottom: 1px solid lightgray;
+  z-index: 1000;
+  overflow: visible; /* allow dropdown to overflow */
+}
+
+.logo .retro {
+  height: 12px !important;
+  width: 12px !important;
+  object-fit: contain;
+  padding-top: 40px;
+}
+
+/* Center nav links */
+.nav-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding-left: 330px;
+}
+
+.nav-center ul {
+  display: flex;
+  align-items: center;
+  gap: 70px;
+}
+
+.nav-center ul li {
+  list-style: none;
+}
+
+.nav-center ul a {
+  text-decoration: none;
+  color: white;
+  font-weight: 500;
+}
+
+.nav-center ul a:hover {
+  color: #2e227b;
+}
+
+/* Right-side icons */
+.nav-right {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  position: relative;  /* for dropdown positioning */
+  overflow: visible;   /* ensure dropdown isn't clipped */
+  z-index: 1100;       /* above nav */
+}
+
+.nav-right ul {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.nav-right ul li {
+  list-style: none;
+}
+
+.cart-icon-button,
+.profile-icon-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.profile-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  filter: brightness(0) invert(1);
+}
+
+.profile-dropdown {
+  position: relative;
+  overflow: visible;
+  z-index: 1200;
+}
+
+/* Dropdown styling - FIXED FOR VERTICAL LAYOUT */
+.dropdown-menu {
+  position: absolute !important;
+  right: 0 !important;
+  top: 45px !important;
+  width: 220px !important;
+  background-color: #fff !important;
+  color: black !important;
+  border-radius: 12px !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important;
+  list-style: none !important;
+  padding: 8px 0 !important;
+  overflow: visible !important;
+  z-index: 9999 !important;
+  animation: fadeIn 0.25s ease-in-out !important;
+  /* NEW: Ensure vertical stacking */
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.dropdown-menu li {
+  /* REMOVED: display: flex - let it be block for vertical stacking */
+  width: 100% !important;
+  padding: 0 !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: background-color 0.2s ease-in-out !important;
+  /* NEW: Ensure full width and block display */
+  display: block !important;
+}
+
+.dropdown-menu li:hover {
+  background-color: #f3f3f3 !important;
+}
+
+.dropdown-menu a {
+  color: black !important;
+  text-decoration: none !important;
+  display: flex !important;
+  align-items: center !important;
+  width: 100% !important;
+  gap: 12px !important;
+  padding: 12px 20px !important;
+  /* NEW: Ensure proper vertical alignment */
+  flex-direction: row !important;
+}
+
+.logout-button {
+  all: unset !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  width: 100% !important;
+  padding: 12px 20px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  color: black !important;
+  cursor: pointer !important;
+  /* NEW: Ensure proper alignment */
+  flex-direction: row !important;
+}
+
+.logout-button:hover {
+  background-color: #f3f3f3 !important;
+}
+
+.dropdown-icon {
+  width: 30px !important;
+  height: 25px !important;
+  flex-shrink: 0 !important; /* NEW: Prevent icon from shrinking */
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0 !important;
+    transform: translateY(-5px) !important;
+  }
+  to {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+  }
+}

@@ -1,0 +1,93 @@
+
+
+/* General styles */
+body {
+  color: white;
+  background-color: #000000 !important;
+  font-family: "Poppins", sans-serif;
+}
+
+main {
+  height: 700px;
+}
+
+section {
+  display: flex;
+}
+
+section .welcomesection {
+  background-size: cover;
+  height: 700px;
+  width: 750px;
+}
+
+.detailsection {
+  height: 700px;
+  width: 600px;
+  margin-left: 70px;
+  margin-top: 180px;
+  margin-bottom: 50px;
+}
+
+.detailsection h2 {
+  margin-bottom: 8px;
+}
+
+.subtext {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.detailsection form {
+  display: flex;
+  flex-direction: column;
+}
+
+.detailsection input {
+  padding: 12px;
+  margin: 8px 0;
+  border: 1px solid silver;
+  border-radius: 4px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.primary-btn {
+  background-color: #5c49d9;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 6px 0;
+  width: auto;
+  min-width: 100px;
+}
+
+.primary-btn:hover {
+  background-color: green;
+}
+
+.loginbtn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.loginbtn a {
+  text-decoration: none;
+  color: #DB4444;
+  white-space: nowrap;
+}
+
+.signup-text {
+  font-size: 14.4px;
+  text-align: left;
+  margin-top: 20px;
+}
+
+.signup-text a {
+  color: white;
+}

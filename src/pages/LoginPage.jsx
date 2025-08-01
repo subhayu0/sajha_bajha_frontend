@@ -1,162 +1,273 @@
-"use client"
 
-import { useState } from "react"
-import { Link } from "react-router-dom"
-import { Eye, EyeOff, Music, Lock, Mail } from "lucide-react"
+// import React, { useState, useContext } from 'react';
+// import { Link, useNavigate } from 'react-router-dom';
+// import Header from '../components/Header.jsx';
+// import Footer from '../components/Footer.jsx';
+// import '../style/LoginPage.css';
+// import axios from 'axios';
+// import { AuthContext } from '../context/AuthContext.jsx';
 
-const LoginPage = ({ onLogin }) => {
-  const [showPassword, setShowPassword] = useState(false)
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  })
+// const LoginPage = () => {
+//   const navigate = useNavigate();
+//   const { login } = useContext(AuthContext);
+//   const [formData, setFormData] = useState({ email: '', password: '' });
+//   const [pending, setPending] = useState(false);
+//   const [error, setError] = useState('');
+
+//   const handleInputChange = (e) => {
+//     const { name, value } = e.target;
+//     setFormData((prev) => ({
+//       ...prev,
+//       [name]: value,
+//     }));
+//     if (error) setError('');
+//   };
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     setPending(true);
+//     setError('');
+
+//     try {
+//       const { email, password } = formData;
+
+//       const response = await axios.post('http://localhost:5001/api/auth/login', {
+//         email,
+//         password,
+//       });
+
+//       console.log("Login response:", response.data);
+
+//       // ✅ Extract user from nested response
+//       const userData = response.data?.data?.user;
+//       const token = response.data?.data?.access_token;
+
+//       console.log("User data from login:", userData);
+//       console.log("Token from login:", token);
+
+//       if (!userData) {
+//         setError("Invalid login response: user data missing.");
+//         return;
+//       }
+
+//       if (!token) {
+//         setError("Invalid login response: token missing.");
+//         return;
+//       }
+
+//       // Store token in localStorage
+//       localStorage.setItem('access_token', token);
+//       console.log('Token stored in localStorage:', localStorage.getItem('access_token'));
+
+//       // Call login function from AuthContext
+//       login(userData, token);
+//       console.log('Login function called with:', { userData, token });
+
+//       // ✅ Safe redirect based on user role
+//       if (userData.isAdmin) {
+//         console.log('User is admin, redirecting to admin dashboard');
+//         navigate('/admin-dashboard');
+//       } else {
+//         console.log('User is not admin, redirecting to dashboard');
+//         navigate('/dashboard');
+//       }
+//     } catch (err) {
+//       console.error('Login error:', err);
+//       const errMsg = err.response?.data?.message || err.message || 'Login failed. Please try again.';
+//       setError(errMsg);
+//     } finally {
+//       setPending(false);
+//     }
+//   };
+
+//   return (
+//     <>
+//       <Header />
+//       <main>
+//         <section>
+//           <div className="welcomesection" style={{ backgroundImage: "url('/hero.png')" }}></div>
+//           <div className="detailsection">
+//             <h2>Log in to Retrocrug</h2>
+//             <span className="subtext">Enter your details below</span>
+//             {error && <p style={{ color: 'red', marginTop: '10px' }}>{error}</p>}
+//             <form onSubmit={handleSubmit}>
+//               <input
+//                 type="email"
+//                 name="email"
+//                 placeholder="Email or Phone Number"
+//                 value={formData.email}
+//                 onChange={handleInputChange}
+//                 required
+//               />
+//               <input
+//                 type="password"
+//                 name="password"
+//                 placeholder="Password"
+//                 value={formData.password}
+//                 onChange={handleInputChange}
+//                 required
+//               />
+//               <div className="loginbtn" style={{ marginTop: '10px' }}>
+//                 <button type="submit" className="primary-btn" disabled={pending}>
+//                   {pending ? 'Logging in...' : 'Log in'}
+//                 </button>
+//                 <a href="#">Forgot password?</a>
+//               </div>
+//               <p className="signup-text">
+//                 Don't have an account? <Link to="/signup"><u>Sign up</u></Link>
+//               </p>
+//             </form>
+//           </div>
+//         </section>
+//       </main>
+//       <Footer />
+//     </>
+//   );
+// };
+
+// export default LoginPage;
+
+
+
+
+import React, { useState, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import Header from '../components/Header.jsx';
+import Footer from '../components/Footer.jsx';
+import '../style/LoginPage.css';
+import axios from 'axios';
+import { AuthContext } from '../context/AuthContext.jsx';
+
+const LoginPage = () => {
+  const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
+  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState('');
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-    }))
-  }
+    }));
+    if (error) setError('');
+  };
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setPending(true);
+    setError('');
 
-    // Simulate authentication
-    const user = {
-      id: "1",
-      name: formData.email.split("@")[0],
-      email: formData.email,
+    try {
+      const { email, password } = formData;
+
+      // Use the API instance from context/api.js instead of direct axios call
+      // This ensures consistent configuration and error handling
+      const response = await fetch('http://localhost:5001/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+
+      // Check if the response is ok (status in the range 200-299)
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Login failed. Please try again.');
+      }
+
+      const data = await response.json();
+      console.log("Login response:", data);
+
+      // ✅ Extract user from nested response
+      const userData = data?.data?.user;
+      const token = data?.data?.access_token;
+
+      console.log("User data from login:", userData);
+      console.log("Token from login:", token);
+
+      if (!userData) {
+        setError("Invalid login response: user data missing.");
+        return;
+      }
+
+      if (!token) {
+        setError("Invalid login response: token missing.");
+        return;
+      }
+
+      // Store token in localStorage
+      localStorage.setItem('access_token', token);
+      console.log('Token stored in localStorage:', localStorage.getItem('access_token'));
+
+      // Call login function from AuthContext
+      login(userData, token);
+      console.log('Login function called with:', { userData, token });
+
+      // ✅ Safe redirect based on user role
+      if (userData.isAdmin) {
+        console.log('User is admin, redirecting to admin dashboard');
+        navigate('/admin-dashboard');
+      } else {
+        console.log('User is not admin, redirecting to dashboard');
+        navigate('/dashboard');
+      }
+    } catch (err) {
+      console.error('Login error:', err);
+      setError(err.message || 'Login failed. Please try again.');
+    } finally {
+      setPending(false);
     }
-
-    onLogin(user)
-  }
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-100 via-white to-indigo-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        {/* Header */}
-        <div className="text-center">
-          <div className="flex justify-center">
-            <div className="bg-purple-600 p-3 rounded-full">
-              <Music className="h-8 w-8 text-white" />
-            </div>
-          </div>
-          <h2 className="mt-6 text-3xl font-bold text-gray-900">Welcome back!</h2>
-          <p className="mt-2 text-sm text-gray-600">Sign in to your account to continue your musical journey</p>
-        </div>
-
-        {/* Form */}
-        <div className="bg-white py-8 px-6 shadow-xl rounded-lg">
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                Email Address
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  placeholder="Enter your email"
-                />
-              </div>
-            </div>
-
-            <div>
-              <div className="flex items-center justify-between">
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                  Password
-                </label>
-                <Link to="/forgot-password" className="text-sm text-purple-600 hover:text-purple-500">
-                  Forgot password?
-                </Link>
-              </div>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  id="password"
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  required
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  className="pl-10 pr-10 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  placeholder="Enter your password"
-                />
-                <button
-                  type="button"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
-                  ) : (
-                    <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
-                  )}
-                </button>
-              </div>
-            </div>
-
-            <div className="flex items-center">
+    <>
+      <Header />
+      <main>
+        <section>
+          <div className="welcomesection" style={{ backgroundImage: "url('/hello.png')" }}></div>
+          <div className="detailsection">
+            <h2>Log in to Sajha-Bajha</h2>
+            <span className="subtext">Enter your details below</span>
+            {error && <p style={{ color: 'red', marginTop: '10px' }}>{error}</p>}
+            <form onSubmit={handleSubmit}>
               <input
-                id="remember-me"
-                name="remember-me"
-                type="checkbox"
-                className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+                type="email"
+                name="email"
+                placeholder="Email or Phone Number"
+                value={formData.email}
+                onChange={handleInputChange}
+                required
               />
-              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
-                Remember me
-              </label>
-            </div>
-
-            <button
-              type="submit"
-              className="w-full bg-purple-600 text-white py-2 px-4 rounded-md font-medium hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors duration-200"
-            >
-              Sign In
-            </button>
-          </form>
-
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
-              Don't have an account?{" "}
-              <Link to="/signup" className="text-purple-600 hover:text-purple-500 font-medium">
-                Sign up
-              </Link>
-            </p>
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                value={formData.password}
+                onChange={handleInputChange}
+                required
+              />
+              <div className="loginbtn" style={{ marginTop: '10px' }}>
+                <button type="submit" className="primary-btn" disabled={pending}>
+                  {pending ? 'Logging in...' : 'Log in'}
+                </button>
+                <a href="#">Forgot password?</a>
+              </div>
+              <p className="signup-text">
+                Don't have an account? <Link to="/signup"><u>Sign up</u></Link>
+              </p>
+            </form>
           </div>
-        </div>
+        </section>
+      </main>
+      <Footer />
+    </>
+  );
+};
 
-        {/* Features */}
-        <div className="text-center">
-          <div className="grid grid-cols-3 gap-4 text-sm text-gray-600">
-            <div>
-              <div className="font-medium">Premium Quality</div>
-              <div>Certified instruments</div>
-            </div>
-            <div>
-              <div className="font-medium">Fast Shipping</div>
-              <div>Free over $50</div>
-            </div>
-            <div>
-              <div className="font-medium">Expert Support</div>
-              <div>24/7 assistance</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-export default LoginPage
+export default LoginPage;

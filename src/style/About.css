@@ -1,0 +1,159 @@
+.about-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  background-color: #2f1e84;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  padding: 4rem 3rem;
+  flex-wrap: wrap;
+  gap: 2rem;
+  overflow: hidden;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.about-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.about-left-images {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: flex-end;
+  flex-wrap: nowrap;
+}
+
+.img-cricket {
+  width: 400px;
+  height:400px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  margin-top: 50px;
+  border:2px solid black;
+}
+
+
+
+.ratings-card {
+  background-color: rgba(255, 255, 255, 0.08);
+  padding: 1rem;
+  border-radius: 12px;
+  text-align: center;
+  width: 300px;
+  border:2px solid black;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.rating-bar {
+  background-color: #ccc;
+  height: 8px;
+  border-radius: 10px;
+  margin: 0.5rem 0;
+  overflow: hidden;
+}
+
+.rating-fill {
+  height: 100%;
+  width: 70%;
+  background-color: #fff;
+  border-radius: 10px;
+}
+
+.emojis {
+  font-size: 1rem;
+}
+
+.about-right {
+  flex: 1.2;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  position: relative;
+  max-width: 600px;
+}
+
+.sports-banner {
+  width: 180px;
+  align-self: flex-end;
+  margin-bottom: 1rem;
+  height:180px;
+
+}
+
+.small-heading {
+  font-size: 0.8rem;
+  color: #bcb8ef;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.main-heading {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.description {
+  line-height: 1.6;
+  font-size: 1rem;
+  color: #e2e0f5;
+}
+
+.explore-btn {
+  background-color: #5c49d9;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  width: fit-content;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.explore-btn:hover {
+  background-color: #7262ec;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 1024px) {
+  .about-wrapper {
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+  }
+
+  .about-left, .about-right {
+    width: 100%;
+    align-items: center;
+    text-align: center;
+  }
+
+  .about-left-images {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .img-cricket {
+    width: 180px;
+    height:500px;
+  }
+
+  .ratings-card {
+    width: 140px;
+  }
+
+  .sports-banner {
+    margin: 0 auto 1rem;
+  }
+
+  .explore-btn {
+    margin: 0 auto;
+  }
+}

@@ -1,0 +1,164 @@
+*{
+    margin:0px;
+    padding:0px;
+}
+
+body{
+    color:white;
+    background-color: #000000 !important;
+    font-family: "Poppins", sans-serif;
+}
+
+nav{
+    position: fixed;
+    top:0;
+    left:0;
+    padding: 16px 32px;
+    display:flex;
+    height:66px;
+    width:100%;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #54548B;
+    color:white;
+     border-bottom: 1px solid lightgray;
+     z-index: 1000;
+}
+
+ .logo .retro{
+    height:90px;
+    width:90px;
+}
+
+nav{
+  display: flex;
+  gap: 60px;
+  justify-content: flex-start;
+}
+
+
+nav .nav-right ul{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: 350px;
+}
+
+nav .nav-right ul li{
+    list-style: none;
+     margin: 0 23px;
+}
+
+nav .nav-right ul a{
+    text-decoration: none;
+    color:white;
+    display:flex;
+}
+
+nav .nav-right ul a:hover{
+    color:#2E227B;
+}
+
+
+section{
+    display: flex;
+}
+main{
+    height: 700px;
+}
+
+section .welcomesection{
+    background-image: url(hero.png);
+    background-size: cover;
+    height:700px;
+    width:750px;
+}
+
+.detailsection{
+    height: 700px;
+    width: 600px;
+    margin-left:70px;
+    margin-top:180px;
+    margin-bottom: 50px;
+}
+
+.detailsection h2 {
+  margin-bottom: 8px;
+}
+
+.detailsection span{
+    color:lightgray;
+}
+
+.detailsection form {
+  display: flex;
+  flex-direction: column;
+}
+
+.detailsection input {
+  padding: 12px;
+  margin: 8px 0;
+  border: 1px solid silver;
+  border-radius: 4px;
+}
+
+.primary-btn {
+  background-color:#DB4444;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 8px 0;
+}
+
+.google-btn {
+  background: white;
+  border: 1px solid silver;
+  padding: 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 8px;
+}
+
+.google-btn img{
+    width: 20px; 
+  height: auto; 
+
+}
+
+.login-text {
+  font-size: 14.4px;
+  text-align: center;
+}
+
+.login-text a{
+  color:white;
+}
+
+.primary-btn:hover{
+    background-color: green;
+}
+
+footer {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background:#0E0E1A;
+  color: white;
+  padding: 32px 16px;
+  flex-wrap: wrap;
+  border-top: 2px solid white;
+  height:270px;
+}
+
+.footerfirst img{
+    height:250px;
+    width:250px;
+}
+
+.footerthird img{
+    height:40px;
+    width:40px;
+}
+

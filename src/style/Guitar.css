@@ -1,0 +1,155 @@
+ /* Basic Reset and Font Import */
+                @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+                body {
+                    margin: 0;
+                    font-family: 'Inter', sans-serif;
+                    -webkit-font-smoothing: antialiased;
+                    -moz-osx-font-smoothing: grayscale;
+                    background-color: #2f1e84;
+                    color: white;
+                }
+
+                /* App Container */
+                .app-container {
+                    min-height: 100vh;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    padding: 2rem 1rem; /* py-8 px-4 */
+                    padding-top: 100px;
+                    padding-bottom: 50px;
+                }
+
+                /* Page Title */
+                .page-title {
+                    font-size: 2.25rem; /* text-3xl */
+                    font-weight: 700; /* font-bold */
+                    margin-bottom: 2rem; /* mb-8 */
+                    text-align: center;
+                }
+
+                /* Responsive adjustments for page title */
+                @media (min-width: 768px) { /* md: */
+                    .page-title {
+                        font-size: 2.5rem; /* md:text-4xl */
+                    }
+                }
+
+                /* Products Grid Container */
+                .products-grid-container {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Responsive grid */
+                    gap: 1.5rem; /* gap-6 */
+                    width: 100%;
+                    /* max-width: 960px; Max width for grid */
+                    padding: 0 1rem; /* px-4 */
+                }
+
+                /* Product Card */
+                .product-card {
+                    position: relative;
+                    background-color: white; /* White background for product images */
+                    border-radius: 0.5rem; /* rounded-lg */
+                    overflow: hidden;
+                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
+                    display: flex;
+                    flex-direction: column; /* Changed to column to stack image, name, price */
+                    justify-content: space-between; /* Distribute space */
+                    align-items: center;
+                    height: 200px; /* Increased height to accommodate text */
+                    transition: transform 0.3s ease-in-out;
+                    cursor: pointer;
+                    padding-bottom: 10px; /* Add padding at the bottom for text */
+                }
+
+                .product-card:hover {
+                    transform: scale(1.05);
+                }
+
+                /* Product Image */
+                .product-image {
+                    max-width: 90%;
+                    max-height: 70%; /* Adjust height to make space for text */
+                    object-fit: contain; /* Ensure image fits without cropping */
+                    transition: opacity 0.3s ease-in-out;
+                    margin-top: 10px; /* Add some top margin for spacing */
+                }
+
+                /* Product Name */
+                .product-name {
+                    color: #333; 
+                    font-weight: 600;
+                    margin-top: 8px;
+                    font-size: 0.9rem;
+                    text-align: center;
+                }
+
+                /* Product Price */
+                .product-price {
+                    color: #555; /* Slightly lighter color for price */
+                    font-size: 0.8rem;
+                    text-align: center;
+                    margin-top: 4px;
+                }
+
+
+                /* Add to Cart Overlay */
+                .add-to-cart-overlay {
+                    position: absolute;
+                    inset: 0;
+                    background-color: rgba(0, 0, 0, 0.6); /* Darker overlay */
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    opacity: 0; /* Initially hidden */
+                    transition: opacity 0.3s ease-in-out;
+                }
+
+                .product-card:hover .add-to-cart-overlay {
+                    opacity: 1; /* Visible on hover */
+                }
+
+                /* Add to Cart Button */
+                .add-to-cart-button {
+                    background-color: #FF00FF; /* Bright Pink */
+                    color: white;
+                    font-weight: 600;
+                    padding: 0.75rem 1.5rem;
+                    border-radius: 9999px; /* rounded-full */
+                    border: none;
+                    cursor: pointer;
+                    transition: background-color 0.3s ease-in-out;
+                }
+
+                .add-to-cart-button:hover {
+                    background-color: #CC00CC; /* Darker Pink */
+                }
+
+                /* Responsive adjustments for product card size */
+                @media (min-width: 640px) { /* sm: */
+                    .products-grid-container {
+                        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+                    }
+                    .product-card {
+                        height: 220px; /* Adjusted height */
+                    }
+                }
+
+                @media (min-width: 768px) { /* md: */
+                    .products-grid-container {
+                        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                    }
+                    .product-card {
+                        height: 240px; /* Adjusted height */
+                    }
+                }
+
+                @media (min-width: 1024px) { /* lg: */
+                    .products-grid-container {
+                        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+                    }
+                    .product-card {
+                        height: 260px; /* Adjusted height */
+                    }
+                }

@@ -1,223 +1,99 @@
-import React, { createContext, useContext, useReducer, useEffect } from 'react';
-import { storage } from '../utils/helpers';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import axios from 'axios';
 
-// Initial state
-const initialState = {
-  items: [],
-  total: 0,
-  itemCount: 0,
-};
+// Create an axios instance with the base URL
+const api = axios.create({
+  baseURL: 'http://localhost:5001/api'
+});
 
-// Action types
-const CART_ACTIONS = {
-  ADD_ITEM: 'ADD_ITEM',
-  REMOVE_ITEM: 'REMOVE_ITEM',
-  UPDATE_QUANTITY: 'UPDATE_QUANTITY',
-  CLEAR_CART: 'CLEAR_CART',
-  LOAD_CART: 'LOAD_CART',
-};
-
-// Reducer function
-const cartReducer = (state, action) => {
-  switch (action.type) {
-    case CART_ACTIONS.ADD_ITEM: {
-      const existingItem = state.items.find(item => item.id === action.payload.id);
-      
-      if (existingItem) {
-        // Update quantity if item already exists
-        const updatedItems = state.items.map(item =>
-          item.id === action.payload.id
-            ? { ...item, quantity: item.quantity + action.payload.quantity }
-            : item
-        );
-        
-        return {
-          ...state,
-          items: updatedItems,
-          total: updatedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0),
-          itemCount: updatedItems.reduce((sum, item) => sum + item.quantity, 0),
-        };
-      } else {
-        // Add new item
-        const newItems = [...state.items, action.payload];
-        return {
-          ...state,
-          items: newItems,
-          total: newItems.reduce((sum, item) => sum + (item.price * item.quantity), 0),
-          itemCount: newItems.reduce((sum, item) => sum + item.quantity, 0),
-        };
-      }
+// Add a request interceptor to automatically add the Authorization header
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
-    
-    case CART_ACTIONS.REMOVE_ITEM: {
-      const updatedItems = state.items.filter(item => item.id !== action.payload);
-      return {
-        ...state,
-        items: updatedItems,
-        total: updatedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0),
-        itemCount: updatedItems.reduce((sum, item) => sum + item.quantity, 0),
-      };
-    }
-    
-    case CART_ACTIONS.UPDATE_QUANTITY: {
-      const { id, quantity } = action.payload;
-      const updatedItems = state.items.map(item =>
-        item.id === id ? { ...item, quantity: Math.max(1, quantity) } : item
-      );
-      
-      return {
-        ...state,
-        items: updatedItems,
-        total: updatedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0),
-        itemCount: updatedItems.reduce((sum, item) => sum + item.quantity, 0),
-      };
-    }
-    
-    case CART_ACTIONS.CLEAR_CART:
-      return {
-        ...state,
-        items: [],
-        total: 0,
-        itemCount: 0,
-      };
-    
-    case CART_ACTIONS.LOAD_CART:
-      return {
-        ...state,
-        ...action.payload,
-      };
-    
-    default:
-      return state;
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
-};
+);
+import { useAuth } from './AuthContext';
 
-// Create context
 const CartContext = createContext();
 
-// Provider component
+export const useCart = () => useContext(CartContext);
+
 export const CartProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(cartReducer, initialState);
+  const { user, token } = useAuth();
+  const [cartItems, setCartItems] = useState([]);
 
-  // Load cart from localStorage on mount
+  console.log('CartProvider user:', user);
+  console.log('CartProvider token:', token);
+
   useEffect(() => {
-    const savedCart = storage.get('cart');
-    if (savedCart) {
-      dispatch({ type: CART_ACTIONS.LOAD_CART, payload: savedCart });
+    if (user && user.id && token) {
+      fetchCart();
+    } else {
+      setCartItems([]);
     }
-  }, []);
+  }, [user, token]);
 
-  // Save cart to localStorage whenever it changes
-  useEffect(() => {
-    storage.set('cart', state);
-  }, [state]);
-
-  // Add item to cart
-  const addToCart = (product, quantity = 1) => {
-    const cartItem = {
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      image: product.images?.[0] || product.image,
-      quantity,
-      stockQuantity: product.stockQuantity,
-      sku: product.sku,
-    };
-    
-    dispatch({ type: CART_ACTIONS.ADD_ITEM, payload: cartItem });
+  const fetchCart = async () => {
+    console.log('fetchCart called');
+    try {
+      const res = await api.get(`/users/${user.id}/cart`);
+      console.log('fetchCart response:', res.data);
+      console.log('Cart items structure:', res.data.data);
+      if (res.data.data && res.data.data.length > 0) {
+        console.log('First cart item:', res.data.data[0]);
+      }
+      setCartItems(res.data.data);
+    } catch (error) {
+      console.error('Failed to fetch cart:', error.response ? error.response.data : error);
+    }
   };
 
-  // Remove item from cart
-  const removeFromCart = (productId) => {
-    dispatch({ type: CART_ACTIONS.REMOVE_ITEM, payload: productId });
+  const addToCart = async (productId, quantity = 1) => {
+    console.log('addToCart called with:', productId, quantity); // Debug log
+    try {
+      await api.post(
+        `/users/${user.id}/cart`,
+        { productId, quantity }
+      );
+      fetchCart();
+    } catch (error) {
+      console.error('Failed to add to cart:', error.response ? error.response.data : error); // Improved error log
+    }
   };
 
-  // Update item quantity
-  const updateQuantity = (productId, quantity) => {
-    dispatch({ type: CART_ACTIONS.UPDATE_QUANTITY, payload: { id: productId, quantity } });
+  const removeFromCart = async (productId) => {
+    try {
+      await api.delete(
+        `/users/${user.id}/cart/${productId}`
+      );
+      fetchCart();
+    } catch (error) {
+      console.error('Failed to remove from cart:', error.response ? error.response.data : error);
+    }
   };
 
-  // Clear entire cart
-  const clearCart = () => {
-    dispatch({ type: CART_ACTIONS.CLEAR_CART });
-  };
-
-  // Check if item is in cart
-  const isInCart = (productId) => {
-    return state.items.some(item => item.id === productId);
-  };
-
-  // Get item quantity in cart
-  const getItemQuantity = (productId) => {
-    const item = state.items.find(item => item.id === productId);
-    return item ? item.quantity : 0;
-  };
-
-  // Calculate subtotal
-  const getSubtotal = () => {
-    return state.total;
-  };
-
-  // Calculate tax (13% VAT for Nepal)
-  const getTax = () => {
-    return state.total * 0.13;
-  };
-
-  // Calculate shipping (free for orders over NPR 5000)
-  const getShipping = () => {
-    return state.total >= 5000 ? 0 : 500;
-  };
-
-  // Calculate total with tax and shipping
-  const getTotal = () => {
-    return state.total + getTax() + getShipping();
-  };
-
-  // Check if cart is empty
-  const isEmpty = () => {
-    return state.items.length === 0;
-  };
-
-  // Get cart summary
-  const getCartSummary = () => {
-    return {
-      subtotal: getSubtotal(),
-      tax: getTax(),
-      shipping: getShipping(),
-      total: getTotal(),
-      itemCount: state.itemCount,
-      isEmpty: isEmpty(),
-    };
-  };
-
-  const value = {
-    ...state,
-    addToCart,
-    removeFromCart,
-    updateQuantity,
-    clearCart,
-    isInCart,
-    getItemQuantity,
-    getSubtotal,
-    getTax,
-    getShipping,
-    getTotal,
-    isEmpty,
-    getCartSummary,
+  const updateCartQuantity = async (productId, quantity) => {
+    try {
+      await api.put(
+        `/users/${user.id}/cart/${productId}`,
+        { quantity }
+      );
+      fetchCart();
+    } catch (error) {
+      console.error('Failed to update cart quantity:', error.response ? error.response.data : error);
+    }
   };
 
   return (
-    <CartContext.Provider value={value}>
+    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, updateCartQuantity }}>
       {children}
     </CartContext.Provider>
   );
 };
-
-// Custom hook to use cart context
-export const useCart = () => {
-  const context = useContext(CartContext);
-  if (!context) {
-    throw new Error('useCart must be used within a CartProvider');
-  }
-  return context;
-}; 
