@@ -11,7 +11,7 @@ const Customer = () => {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Fetch all users from the backend
+  // Fetch all users from the backend  
   const fetchCustomers = async () => {
     try {
       setLoading(true);
