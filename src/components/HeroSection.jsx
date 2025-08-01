@@ -22,7 +22,7 @@ const SportsHomepage = () => {
   const sportsCategories = [
     {
       name: "Guitar",
-      image: "guitar.png",  // changed from guitar.jpg to guitar.png
+      image: "guitar.png", 
       route: "/Guitar"  //c
     },
     {
