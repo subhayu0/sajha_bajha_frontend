@@ -22,3 +22,5 @@ const HomePage = () => {
 };
 
 export default HomePage;
+
+// This file serves as the main homepage component, integrating various sections like HeroSection, BestSellers, NewArrivals, and BrandsWeCarry.
