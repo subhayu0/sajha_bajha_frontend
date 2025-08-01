@@ -11,7 +11,7 @@ const NewArrivals = () => {
   const [randomExploreProducts, setRandomExploreProducts] = useState([]);
   const [randomNewArrivals, setRandomNewArrivals] = useState([]);
 
-  // Function to shuffle and pick a subset of products
+  // Function to shuffle and pick a subset of products     
   const getRandomProducts = (productsList, count = 6) => {
     const shuffled = [...productsList].sort(() => 0.5 - Math.random());
     return shuffled.slice(0, count);

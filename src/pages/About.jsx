@@ -32,6 +32,7 @@ export default function About() {
             musical instruments. We believe every instrument tells a story. 
             From beginners to pros, weoffer a curated selection of guitars, drums,
             piano, and more to help you find your sound and share your music with the world.
+            
           </p>
           <button className="explore-btn" onClick={() => navigate('/dashboard')}>
             EXPLORE MORE
