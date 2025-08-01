@@ -3,7 +3,7 @@ import { Truck, Headphones, Shield } from 'lucide-react';
 import '../style/BrandsWeCarry.css'; // Import external CSS
 
 const BrandsSection = () => {
-  // Brand logos data - Replace these paths with your actual image paths
+  // Brand logos data - Replace these paths with your actual image paths  
   const brands = [
     { name: 'Yamaha', logo: '/yamaha.png' },
     { name: 'Gibson', logo: '/gibson.png' },
