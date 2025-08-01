@@ -30,7 +30,7 @@ const Checkout = () => {
     baseURL: 'http://localhost:5001/api'
   });
 
-  // Add a request interceptor to automatically add the Authorization header
+  // Add a request interceptor to automatically add the Authorization header   
   api.interceptors.request.use(
     (config) => {
       const token = localStorage.getItem('access_token');
