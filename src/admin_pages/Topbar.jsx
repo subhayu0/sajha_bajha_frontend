@@ -9,7 +9,7 @@ const Topbar = () => {
 
   const handleLogout = () => {
     logout(); // clear context and localStorage
-    navigate('/login'); // redirect to login page
+    navigate('/login'); // redirect to login page  
   };
 
   return (
