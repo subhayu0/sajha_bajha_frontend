@@ -30,7 +30,7 @@ const AdminProduct = () => {
       if (refreshProducts) {
         await refreshProducts();
       } else {
-        window.location.reload(); // fallback
+        window.location.reload(); // fallback if refreshProducts is not available
       }
     } catch (err) {
       console.error('Delete error:', err);
